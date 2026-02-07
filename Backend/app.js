@@ -1,9 +1,14 @@
+//  Main
 const express = require("express");
 const app = express();
 
+//  Helpers
 const cors = require("cors");
 const connectDB = require("./DB/Connections/connectDB");
 const { errors } = require("celebrate");
+
+//  Routers
+const userRouter = require("./Routers/users.route");
 
 
 connectDB();
@@ -16,6 +21,7 @@ app.use(
 
 app.use(express.json()); // Parse first
 
+app.use("/users", userRouter);
 
 app.get("/health", (req, res) => {
   res.send("Server says Heyyyy! :)");
