@@ -5,14 +5,27 @@ const hashingRounds = 10;
 
 const registerUser = async (req, res) => {
   try {
-    const { password, ...data } = req.body;
+    const { password, email, ...data } = req.body;
+
+    const existingUser = await usersCollection.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Email is already registered" });
+    }
 
     const pwdHash = await bcrypt.hash(password, hashingRounds);
+
     const createdUser = await usersCollection.create({
       ...data,
+      email,
       password: pwdHash,
     });
-    const { password: userPwd, ...userData } = createdUser;
+
+    // Sanitized user data
+    // I'll prob send a generic response initially. And on login send a bit of user info.
+
+    const { password: userPwd, ...userData } = createdUser.toObject();
     res.status(201).json({
       success: true,
       message: "User created successfully",
@@ -20,7 +33,7 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "An error occured" });
+    res.status(500).json({ success: false, message: "An error occurred" });
   }
 };
 
