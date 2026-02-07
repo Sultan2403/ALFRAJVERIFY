@@ -1,6 +1,6 @@
 const { celebrate } = require("celebrate");
 const express = require("express");
-const userSchema = require("../Schemas/users.schema");
+const {registerSchema, loginSchema} = require("../Schemas/users.schema");
 const {
   registerUser,
   loginUser,
@@ -9,7 +9,7 @@ const {
 const router = express.Router();
 
 router.get("/", getAllUsers);
-router.post("/register", celebrate({ body: userSchema }), registerUser);
-router.post("/login", celebrate({ body: userSchema }), loginUser);
+router.post("/register", celebrate({ body: registerSchema }), registerUser);
+router.post("/login", celebrate({ body: loginSchema }), loginUser);
 
 module.exports = router;
